@@ -76,6 +76,8 @@ Name it in `mycroft.conf` (that is the opt-in):
 | `cooldown_sec` | `600` | least time between two comments |
 | `sensitivity_offset` | `0.07` | first-ear threshold offset, higher is stricter (fewer STT runs, fewer catches) |
 | `confirm_blocks` | `2` | windows in a row a phrase must hold |
+| `inline` | on only in Pyodide | run both stages as the audio arrives, without a thread of its own (for Pythons that have none, as in [Emkay](https://github.com/emkay-voice/emkay)) |
+| `quiet_db` | `-50` inline, else off | inline, the first ear rests while the room is quieter than this (dBFS) |
 | `enabled` | `true` | start listening right away; `"active": false` turns the plugin off entirely |
 
 On the bus:
