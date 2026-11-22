@@ -1,0 +1,953 @@
+{
+  "_comment": "Source of the overheard phrases; scripts/build_phrases.py turns it into locale/<lang>/overheard.json. Long phrases on purpose: few phones = many false hits, and stage 2 (STT + good manners' word lists) catches the short words anyway. No slurs. 'en' is listened for in every language, also with the local pronunciation. 'lookalikes' are innocent sentences that sound close; they are used by the tests, not by the plugin. 'heard' holds phones the model itself heard Piper voices say (scripts/heard_phones.py). Lists for ca, eu, gl and pt need a native speaker's review.",
+  "en": {
+    "espeak": "en-us",
+    "phrases": [
+      "what the fuck",
+      "fuck you",
+      "motherfucker",
+      "fucking hell",
+      "oh shit",
+      "bullshit",
+      "son of a bitch",
+      "god damn it",
+      "shut the fuck up"
+    ],
+    "lookalikes": [
+      "what the fun is that",
+      "fork you over",
+      "my mother fixed her",
+      "the funky bell rang",
+      "oh shift it a bit",
+      "a bull shed in the field",
+      "the sun of a beach day",
+      "got them in it yesterday",
+      "shut the front door"
+    ],
+    "heard": {
+      "what the fuck": [
+        "k w o t ə f ɔ k",
+        "k w o t t ð ə f a k",
+        "w o t t a f a",
+        "w a t t a f a"
+      ],
+      "fuck you": [
+        "f a k iː",
+        "f o k iː",
+        "f a k i"
+      ],
+      "motherfucker": [
+        "u m o t ə f a k ɚ",
+        "m ɔ t a f a k ɚ ɹ",
+        "m a v a f a k a",
+        "m a v a f a k"
+      ],
+      "fucking hell": [
+        "f o k i n h ɛ l",
+        "f ɔ t i n h æ l",
+        "f a r k i n h aʊ l",
+        "f a r k i n h æ l"
+      ],
+      "oh shit": [
+        "m o ʃ ɛ n t",
+        "u u ʃ ɛ t",
+        "a n ʃ ɪ t",
+        "h a l n ʃ ɪ t"
+      ],
+      "bullshit": [
+        "p õ l ʃ i ĩ n t",
+        "u p u l ʃ ə t",
+        "p u l ʃ e t",
+        "t o l ʃ e t"
+      ],
+      "son of a bitch": [
+        "s o n a v a b ɪ t",
+        "s o n a v a v b ɪ t tʃ",
+        "s a n d a v a b i",
+        "s a n n a v ɐ b iː"
+      ],
+      "god damn it": [
+        "t a d a n ə t",
+        "k ɡ a d a m ɪ t",
+        "ɡ o d t a m i t",
+        "k o t t a m i t"
+      ],
+      "shut the fuck up": [
+        "ʃ a t ə f a k a p",
+        "ʃ ʂ ɔ l t ə f a k a p",
+        "tʃ a t s t ə f a k a",
+        "ʃ a t s ð ə f ɔː ɑː k ɑː"
+      ]
+    }
+  },
+  "da": {
+    "espeak": "da",
+    "phrases": [
+      "av for helvede",
+      "for fanden",
+      "op i røven",
+      "hold kæft mand",
+      "pis og lort",
+      "fandens også"
+    ],
+    "lookalikes": [
+      "vi kørte for hele vejen",
+      "jeg fandt den i skuffen",
+      "han kravlede op i rummet",
+      "hold kæden stram",
+      "pisk og rør",
+      "fandt den også"
+    ],
+    "heard": {
+      "av for helvede": [
+        "a l f o h i l n v i l",
+        "a l v o h i v i"
+      ],
+      "for fanden": [
+        "f o f ɛ n",
+        "f r o f ɛ n"
+      ],
+      "op i røven": [
+        "a p i ʁ v a j ɡ ə n",
+        "a b j i ɣ a j ɡ ə n"
+      ],
+      "hold kæft mand": [
+        "x o l i k e i f t m ɛ n",
+        "x o n k i f t m ɛ n k"
+      ],
+      "pis og lort": [
+        "p w iː s ʌ o n o t",
+        "p iː s a l l t"
+      ],
+      "fandens også": [
+        "f e n s o s e",
+        "f e n s o s ə n"
+      ],
+      "what the fuck": [
+        "u h h a d i f o k",
+        "w a h ɛ d ə f o k"
+      ],
+      "fuck you": [
+        "f o k j y",
+        "f o k y"
+      ],
+      "motherfucker": [
+        "m a j a f a k a",
+        "m a l o f a k a"
+      ],
+      "fucking hell": [
+        "f o k ɪ ŋ h ɪ d",
+        "f o k i n h iː d"
+      ],
+      "oh shit": [
+        "p u ʃ iː t",
+        "u uː ʃ i t"
+      ],
+      "bullshit": [
+        "p u s i t",
+        "p u ʃ i t"
+      ],
+      "son of a bitch": [
+        "s u n u f ɛ b iː t",
+        "u n l o ɛ p b iː"
+      ],
+      "god damn it": [
+        "p u l d a n i t s ɪ",
+        "k u l d a n iː t iː"
+      ],
+      "shut the fuck up": [
+        "t i ɾ i l f o k u p",
+        "tʃ i t i f o k u p"
+      ]
+    }
+  },
+  "de": {
+    "espeak": "de",
+    "phrases": [
+      "verdammte scheiße",
+      "leck mich am arsch",
+      "halt die klappe",
+      "so ein arschloch",
+      "verdammt noch mal"
+    ],
+    "lookalikes": [
+      "eine verdammte Scheibe Brot",
+      "leg mich am Abend hin",
+      "halt die Kappe fest",
+      "so ein Ascheloch im Ofen",
+      "verdampft noch mal"
+    ],
+    "heard": {
+      "verdammte scheiße": [
+        "f ɛ t a m t u ʃ a s ə",
+        "f ɛ t a n t u ʃ a s ə",
+        "f a t a m d e s a j s",
+        "t a t a d ə ʃ a j ɪ"
+      ],
+      "leck mich am arsch": [
+        "l e t m i ʃ a m a ʃ",
+        "l e t m i s k a m ʃ",
+        "r̝ ɾ ɛ k m ɪ ʃ a m a ʃ",
+        "t ɾ ɛ k n ɪ ʒ a l a ʃ"
+      ],
+      "halt die klappe": [
+        "h a l d i k l a p o",
+        "h a l d i k a p u",
+        "a j i t i k s l a p e",
+        "a t ə i k x l a p ə"
+      ],
+      "so ein arschloch": [
+        "s u ʁ ə n a ʃ ɹ l o x",
+        "s u ʁ a n ɡ a ʃ ɹ o",
+        "s a i h a ʃ l o f",
+        "s a j n a ʃ i l o f"
+      ],
+      "verdammt noch mal": [
+        "f ɛ t a n p o x m a l",
+        "f a t a m n o s m a l",
+        "t a t a m t o x m a j",
+        "j a t a m t o x m a j"
+      ],
+      "what the fuck": [
+        "b a k t ə f o",
+        "p a t e f o k ə",
+        "p a t a f o k"
+      ],
+      "fuck you": [
+        "f u k ʂ j uː",
+        "f u k j uː",
+        "s a s e l",
+        "t e f e"
+      ],
+      "motherfucker": [
+        "m ɐ t a f o k r",
+        "m ɔ t a f u k a",
+        "p a d e s e ð a",
+        "p a d e v t a"
+      ],
+      "fucking hell": [
+        "f u k i m h ɛ l",
+        "f u k i n h ɛ l",
+        "f o u k i ɾ e",
+        "f u k i h e i"
+      ],
+      "oh shit": [
+        "u ʃ i t",
+        "uː ʃ i k",
+        "t a s i x",
+        "t a s i s"
+      ],
+      "bullshit": [
+        "w ʊ ɪ l s h ɪ t",
+        "k w ɪ l s h ɛ t",
+        "p a s t i t",
+        "p a s s e t"
+      ],
+      "son of a bitch": [
+        "s w u n e v ə p ɪ k tʃ ʃ",
+        "s u n e v ə p ɪ t tʃ ʃ",
+        "s u n ə d e p e t tʃ",
+        "s u n u d e p e t tʃ"
+      ],
+      "god damn it": [
+        "k u t a m i t",
+        "t o t a m i t",
+        "p o t a n i t"
+      ],
+      "shut the fuck up": [
+        "ʃ u p ə f u k u",
+        "ʃ u uː p u f u k u",
+        "tʃ u t e f o k u p",
+        "e t u t e f o k u"
+      ]
+    }
+  },
+  "nl": {
+    "espeak": "nl",
+    "phrases": [
+      "godverdomme",
+      "wat een klootzak",
+      "kut zooi",
+      "verdomme nog aan toe"
+    ],
+    "lookalikes": [
+      "god verdoemt",
+      "wat een klootjesvolk",
+      "kort zo",
+      "verder nog aan toe"
+    ],
+    "heard": {
+      "godverdomme": [
+        "x f ɔ l t pf f ɪ d oʊ w m æ",
+        "x o t f ɹ ɪ d oʊ m aɪ æ",
+        "x u t f u r d ə m a t",
+        "x o t f o r d oʊ m ə"
+      ],
+      "wat een klootzak": [
+        "v ɔ ə n k l oʊ w t s aɪ k",
+        "v e n k l oʊ l u t ts a aɪ k",
+        "v a t ə n p l o l t s ʌ a k",
+        "b a t ə n t l oʊ t a k"
+      ],
+      "kut zooi": [
+        "k e t s oʊ i",
+        "k e t s o i",
+        "k w e t s oʊ ɪ",
+        "k y t s o l ɪ"
+      ],
+      "verdomme nog aan toe": [
+        "m ɪ n əl x aʊ m t ə uː",
+        "u m ɐ n o x a m t uː",
+        "v e r d o m ə n u x aʊ n t ə",
+        "a d o m ə n u x a n t ə uː"
+      ],
+      "what the fuck": [
+        "v ɔ t a f uː k",
+        "v a t a f ɪ k",
+        "w u h a t s ɨ f ə k",
+        "w u h a ts s ə s oʊ ə k"
+      ],
+      "fuck you": [
+        "f u t k i a",
+        "f œ k i j a",
+        "s u k j ɔ l",
+        "s u k j ɔ"
+      ],
+      "motherfucker": [
+        "m ɔ t e f ɛ k ɚ ɹ",
+        "m o t a f ɛ k ɚ",
+        "m u t ə s a k e r",
+        "m u t ə s e k e"
+      ],
+      "fucking hell": [
+        "f ɪ k i ŋ h aʊ",
+        "f k i n h æ aʊ",
+        "f u k i n h æ ɛ l",
+        "f u n k ɪ n h aʊ l l"
+      ],
+      "oh shit": [
+        "v o s e t",
+        "o w s iː t",
+        "h uː w u s ʃ i e t",
+        "h a w u ʃ i t"
+      ],
+      "bullshit": [
+        "b ɪ l s e t",
+        "b r ɪ uː l s e e t",
+        "u b u l s e t",
+        "b u l s e t"
+      ],
+      "son of a bitch": [
+        "oʊ f a b ɪ t s",
+        "o f a b ɪ t s",
+        "s o m u f a b ɪ t",
+        "m o f a b ɪ t s"
+      ],
+      "god damn it": [
+        "x ɔ f t ɔ m ɪ t",
+        "x ɔ t ɔ m n i t",
+        "pʰ u l t ɔ m eɪ t",
+        "f u l t ɔ m eɪ t s"
+      ],
+      "shut the fuck up": [
+        "ʃ ɪ t ɪ f ɛ k a p p",
+        "ʃ y t s uː f ɹ ɪ k aʊ p",
+        "ʃ i t ts ə s ɪ k ʌ l p",
+        "s i t ə s ə k ʌ l p"
+      ]
+    }
+  },
+  "fr": {
+    "espeak": "fr-fr",
+    "phrases": [
+      "putain de merde",
+      "merde alors",
+      "ta gueule",
+      "va te faire foutre",
+      "quel connard"
+    ],
+    "lookalikes": [
+      "patin de mer",
+      "mer de alors",
+      "ta bulle de bois",
+      "va te faire couper",
+      "quel canard"
+    ],
+    "heard": {
+      "putain de merde": [
+        "f i d a n d ə m ɛ ʁ ə d ð ə",
+        "p iː d d ʌ n d ɚ m æ ʁ ə ð ɪ",
+        "t a d ɪ m eɪ",
+        "t a d ə d m eɪ ʁ"
+      ],
+      "merde alors": [
+        "m e r d a l ɔ",
+        "n ɛ ʁ d a l oʊ",
+        "n ɛ ʁ f t aɪ n ɔ",
+        "æ m ɛ"
+      ],
+      "ta gueule": [
+        "t a ɡ ɛ l ə",
+        "z a ɡ ə i",
+        "t ɛ i ɡ e d"
+      ],
+      "va te faire foutre": [
+        "v ɛ t ə ɬ e a ʁ f u t ʁ ʌ ɛ t",
+        "v a t ə f v ɪ ʁ f u t l ɛ",
+        "v a t t ɪ f j ɛ ʁ s t ɔ",
+        "a t ɪ f ɛ ʁ s t"
+      ],
+      "quel connard": [
+        "k e l ɡ k a d n aʊ",
+        "k ɛ l ɡ a d n æ",
+        "k e l k o n a",
+        "k e l k o n æ"
+      ],
+      "what the fuck": [
+        "w u t ə f iː",
+        "u t e f iː",
+        "m o t t e s i k k i",
+        "v o t t ɪ s i k t"
+      ],
+      "fuck you": [
+        "f i t iː",
+        "s i t k j",
+        "s i t i uː w",
+        "v yː t i"
+      ],
+      "motherfucker": [
+        "m ɛ d e f ə t ɡ ə",
+        "m ɛ d ɪ s ə t ð ɛ",
+        "y n o t ə v e k",
+        "n a j t u v ɪ"
+      ],
+      "fucking hell": [
+        "f ɛ d ɪ n ɡ a l ə",
+        "f e t i n ɡ a l ə",
+        "s u k ɪ d i eɪ n",
+        "k ə k ɪ ɛ n"
+      ],
+      "oh shit": [
+        "h o ʃ iː d t t",
+        "h o s iː d t",
+        "t o w u ʃ ɛ t t",
+        "o ʃ i t"
+      ],
+      "bullshit": [
+        "b u ə l i s i t",
+        "u b u ə n i s iː t t",
+        "u b o ʃ iː t",
+        "b o l i ʃ iː t"
+      ],
+      "son of a bitch": [
+        "s u m u v e b i t ə",
+        "s u o z e b i t ɛ",
+        "s u l v e k i t ʃ",
+        "s v ɪ ɡ i"
+      ],
+      "god damn it": [
+        "ə ɡ a d ð ɛ n i t t",
+        "ə ɡ a d d a n i t",
+        "ɡ o d u d ɛ n t",
+        "o d u d æ n h ɪ t"
+      ],
+      "shut the fuck up": [
+        "ʃ ɪ t s t ə f i d ð ʌ t p",
+        "ʃ ɪ t d ɪ f ɪ ɡ ʌ t",
+        "ʃ ɪ t t ɪ f ɪ k ɪ t",
+        "t ɪ s i k ɪ"
+      ]
+    }
+  },
+  "es": {
+    "espeak": "es",
+    "phrases": [
+      "me cago en la leche",
+      "joder tío",
+      "hijo de puta",
+      "vete a la mierda",
+      "qué coño"
+    ],
+    "lookalikes": [
+      "me caigo en la leche",
+      "joven tío",
+      "hijo de Pura",
+      "vete a la merienda",
+      "qué coche"
+    ],
+    "heard": {
+      "me cago en la leche": [
+        "m ɛ k ɡ a β o a l a l e t s i",
+        "a m o l a l ɪ t s i",
+        "m e k a p w i ɪ n l ə l ɪ t ə",
+        "e k a k w ɪ l ə l eɪ t s ɪ"
+      ],
+      "joder tío": [
+        "x ɔ d j e ɾ t i o",
+        "k a d e l t i o",
+        "kʰ k u d e r d i ɡ oʊ l",
+        "k o d e r d ð iː b oʊ l"
+      ],
+      "hijo de puta": [
+        "i x o ɾ e p u t a",
+        "i x o r e p u t æ"
+      ],
+      "vete a la mierda": [
+        "b ɛ t a m j ɛ r ɾ a",
+        "b ɛ t e r a m j ɛ r l a",
+        "b e t ɪ h a l a m j ɪ ɾ ə v æ",
+        "h a l a m m j ɪ n ə ð æ"
+      ],
+      "qué coño": [
+        "k e t o n ə",
+        "k e k o n i",
+        "k l e k o ʁ ɲ o",
+        "k e k o n j oʊ l"
+      ],
+      "what the fuck": [
+        "b a r t e f u p",
+        "b a r t e f u",
+        "w ʊ ɛ t t ɪ f ʊ ʁ k",
+        "ʊ w ɛ t i t d e f o l k"
+      ],
+      "fuck you": [
+        "f u t i ɡ o χ",
+        "f u t i ɡ j o",
+        "f u p ɪ i j o",
+        "f u l k ɪ ʝ j oʊ l"
+      ],
+      "motherfucker": [
+        "n o t e f u k ɛ",
+        "m o t e f u l k e",
+        "m a t e r f u p e r",
+        "m a t e r f u k e ɾ ɐ"
+      ],
+      "fucking hell": [
+        "f u k i v e",
+        "f u l k e i v eː e",
+        "x u l k i n ɡ l e d",
+        "x u l k e n d e d"
+      ],
+      "oh shit": [
+        "o θ i t",
+        "v a f i k",
+        "p o s h iː t",
+        "t o s iː t t ə"
+      ],
+      "bullshit": [
+        "w ɪ l s i t",
+        "w ʌ l s i",
+        "b u s iː t",
+        "b u j s i e k"
+      ],
+      "son of a bitch": [
+        "s o n o f a ʁ i s",
+        "s o n o u f a β j i s",
+        "s o n o f a b i k t",
+        "s o n o f h n a b iː k tʃ"
+      ],
+      "god damn it": [
+        "p a ð a m i t",
+        "b ɔ l n a m n i t",
+        "k o d d a n m i iː t",
+        "k o r d a m m i iː t"
+      ],
+      "shut the fuck up": [
+        "s u t e f u k r a",
+        "s u t e f u k ɡ l a",
+        "tʃ i n ð t ð ɪ f ʊ p æ t k",
+        "j o l t ð ɪ f o k æ k"
+      ]
+    }
+  },
+  "it": {
+    "espeak": "it",
+    "phrases": [
+      "porca miseria",
+      "vaffanculo",
+      "che cazzo",
+      "porca puttana"
+    ],
+    "lookalikes": [
+      "porta miseria",
+      "vai al fan club",
+      "che cassa",
+      "porta puntata"
+    ],
+    "heard": {
+      "porca miseria": [
+        "p a ə r k a m i s e ɾ i a",
+        "p o r k a m i s e ɾ i a",
+        "b o r k a m i z e r i a",
+        "p ɔ k a m i s e ɾ i j a"
+      ],
+      "vaffanculo": [
+        "b a f a n d u l o",
+        "m a f a n k u l o",
+        "o m k u l o",
+        "v a f a n k u u l o"
+      ],
+      "che cazzo": [
+        "k e k a s o",
+        "k e k t a t ts o",
+        "k e k k a t s e o"
+      ],
+      "porca puttana": [
+        "p o r k a p u t a n a",
+        "p a r k a p u t a n a",
+        "p o k a p u t a n",
+        "p o s k a p u t a"
+      ],
+      "what the fuck": [
+        "w a t t e f u k ə",
+        "w a t t e f u k a",
+        "w a t t i f u",
+        "p w a t i f u"
+      ],
+      "fuck you": [
+        "f u k i e",
+        "s u k v i o",
+        "t u k ʁ j"
+      ],
+      "motherfucker": [
+        "m ɛ t e r f u k ɛ r",
+        "m o t e r f u k ɛ r",
+        "m ɔ t e v f u k t e",
+        "v o t e f u p ɛ"
+      ],
+      "fucking hell": [
+        "p u t i ŋ ɡ a",
+        "v u t i ŋ ɡ a l",
+        "t u p i ŋ n e r i",
+        "s u k i ŋ e"
+      ],
+      "oh shit": [
+        "m o ʃ i t",
+        "p o ʃ iː t",
+        "t o r ʃ i",
+        "p o ʃ ʂ i"
+      ],
+      "bullshit": [
+        "m b u ʒ i t",
+        "b u ɕ iː t",
+        "b u ʃ i t",
+        "b o ʃ ʃ i"
+      ],
+      "son of a bitch": [
+        "s o n o h v a d m iː t",
+        "s o n o f a d m iː t tʃ",
+        "s u n o f ə b i k",
+        "s u n ɔ f a b i t ə r"
+      ],
+      "god damn it": [
+        "b u d t a m iː t",
+        "b ɔ d d a m iː t",
+        "v ɔ d d a m i",
+        "v ɔ l d a n m iː"
+      ],
+      "shut the fuck up": [
+        "ʃ u d t e f u k a p",
+        "ʃ u t t e f u k a t p",
+        "p e s u k r a",
+        "d e f u k w a"
+      ]
+    }
+  },
+  "ca": {
+    "espeak": "ca",
+    "phrases": [
+      "em cago en la mar",
+      "vés a la merda",
+      "fill de puta",
+      "hòstia puta"
+    ],
+    "lookalikes": [
+      "em caso en la mar",
+      "vés a la merla",
+      "fill de Pura",
+      "història pura"
+    ],
+    "heard": {
+      "em cago en la mar": [
+        "t a m k a w a l a m a ɾ",
+        "t e m d k a w a l a m a ɾ a",
+        "a k a t w ɐ l o m a æ",
+        "ɛ a m ɡ aʊ w ɐ n l ə m a ɾ"
+      ],
+      "vés a la merda": [
+        "b e z a l a m e r a",
+        "b e z a l a m e ɾ v a",
+        "u n b e z a l a m ɛ ɾ a t",
+        "m æ r p e r v"
+      ],
+      "fill de puta": [
+        "f i n d a p u t e",
+        "v iː t e p əl t e",
+        "f v i d a p u t ɛ"
+      ],
+      "hòstia puta": [
+        "p o s p i a p u ð ə",
+        "p o ɬ t i a p u t ə",
+        "p ɔ s t i ɐ p o t t ɛ ɾ ə p",
+        "p a s t i a p u t ð ɪ"
+      ],
+      "what the fuck": [
+        "b a n d a f o p r ə n",
+        "b a n d a f o p e r ə",
+        "p o u b a d ð ə f ɔ",
+        "p a d d ð ə f əl l p ʌ p"
+      ],
+      "fuck you": [
+        "f u p k i oʊ l",
+        "f u k s i oʊ",
+        "p u f u k i ɔ",
+        "s f u p i j oʊ l"
+      ],
+      "motherfucker": [
+        "m u t e r f k e",
+        "m o t a s ɡ e",
+        "m o t r o f o p e r",
+        "m o t a r a f əl t e k"
+      ],
+      "fucking hell": [
+        "f u l k i n d e l n",
+        "f u k i n d e d ə",
+        "f u l k i n d eɪ",
+        "f u l t i n eɪ"
+      ],
+      "oh shit": [
+        "p ɔ ʃ i",
+        "p a l ʊ ʃ i t",
+        "ʃ iː t t",
+        "a ʃ iː t"
+      ],
+      "bullshit": [
+        "p o tʃ i",
+        "b u tʃ ʃ iː",
+        "y n b o l s iː",
+        "p y n b o j tʃ iː"
+      ],
+      "son of a bitch": [
+        "s oʊ l n n o ɔ l l a v i t",
+        "a ʃ o n a ɾ k a ɾ i t k",
+        "ʃ o n a p p e r i t"
+      ],
+      "god damn it": [
+        "b ɔ d d a n d i",
+        "b o d d a n d iː p",
+        "d a m p r iː",
+        "v y i n p a d ə n d a m b iː t"
+      ],
+      "shut the fuck up": [
+        "u d d a f o k uː p ə",
+        "a f o k uː f ð ə l",
+        "ʃ u d a f əl oʊ p",
+        "u d ʌ f u o p"
+      ]
+    }
+  },
+  "eu": {
+    "espeak": "eu",
+    "phrases": [
+      "kaka zaharra",
+      "zoaz pikutara",
+      "putakume hori",
+      "ez izorratu"
+    ],
+    "lookalikes": [
+      "kafe zaharra ez",
+      "zoaz piku batera",
+      "putzu kume hori",
+      "ez izotz ratu"
+    ],
+    "heard": {
+      "kaka zaharra": [
+        "k a k a f a r a",
+        "k a k a f θ l a r a",
+        "k a t a s a r a",
+        "k ɛ k a s a r r a"
+      ],
+      "zoaz pikutara": [
+        "s l a f b i k u d a ɾ a",
+        "l a f p iː k u t æ ɾ a",
+        "s u a s b i k u ð a ɾ a",
+        "t o l a s b i k u d t a ɾ a"
+      ],
+      "putakume hori": [
+        "p u t a k o m ɪ o ɾ i",
+        "p u t ð a k o m ɛ o ɾ i",
+        "p u t a k u m e o ʁ ɾ i",
+        "p u t a k u m e ɛ ɾ i"
+      ],
+      "ez izorratu": [
+        "ɪ f θ i θ a r a t o",
+        "ɪ f ð ɪ θ o r a d u",
+        "e s i s o r a t u"
+      ],
+      "what the fuck": [
+        "w a t t e f u k",
+        "u w a t e f əl",
+        "u a t t e f u k",
+        "u a t ð ɪ f uː k"
+      ],
+      "fuck you": [
+        "v u j o l",
+        "f u d ɪ oʊ w",
+        "f u k j ɪ l",
+        "f u l p j o"
+      ],
+      "motherfucker": [
+        "m ɔ t a r f u k e r",
+        "m o t e r f u k k ɛ r",
+        "m ɔ t a r f u k a r",
+        "m ɔ t e r f u k ð ɛ r"
+      ],
+      "fucking hell": [
+        "f w u l k i n eɪ k",
+        "f u k k i n e j i",
+        "t u p f i n eɪ",
+        "f u k f i n e"
+      ],
+      "oh shit": [
+        "v o s e t e",
+        "p o s e t e",
+        "p o s i t",
+        "o s i t"
+      ],
+      "bullshit": [
+        "b u o s i t ə",
+        "b ʌ s i t ʁ ɛ",
+        "b u ə s i t e",
+        "b u ə i s i t"
+      ],
+      "son of a bitch": [
+        "z o n o f a β i tʃ ə",
+        "s o n o f a β i t",
+        "ʃ o n o f a v i t",
+        "ʃ o n o f a ɾ i t"
+      ],
+      "god damn it": [
+        "ɡ b a d a m i t e",
+        "b ɔ d a m i t e",
+        "ʋ o t a n i t",
+        "b o r d a n i t"
+      ],
+      "shut the fuck up": [
+        "s u d e f o ɡ u k",
+        "s u d d e f əl ɡ o k",
+        "ʃ u p e f l u k u p",
+        "s o t e f u k u p"
+      ]
+    }
+  },
+  "gl": {
+    "espeak": "pt",
+    "phrases": [
+      "me cago en deus",
+      "vai tomar polo cu",
+      "fillo de puta",
+      "manda carallo"
+    ],
+    "lookalikes": [
+      "me caio en deus",
+      "vai tomar polo bus",
+      "fillo de Pura",
+      "manda caravana"
+    ]
+  },
+  "pt": {
+    "espeak": "pt",
+    "phrases": [
+      "vai à merda",
+      "filho da puta",
+      "puta que pariu",
+      "que se foda"
+    ],
+    "lookalikes": [
+      "vai à mercearia",
+      "filho da Pura",
+      "pura que pariu",
+      "que se fala"
+    ],
+    "heard": {
+      "vai à merda": [
+        "v a j a m i j o ɡ ə",
+        "v ɹ a j a m j e r v a",
+        "p a j a m e d ʌ",
+        "b a j a m e l i d"
+      ],
+      "filho da puta": [
+        "f iː n d o p u t o",
+        "f v i ŋ d u t p u p o",
+        "f i ð a p u t a",
+        "f i ə d a p u t a"
+      ],
+      "puta que pariu": [
+        "u b i k p u l ð i n",
+        "u b ɹ i k p u l i",
+        "p u t ə c i p a ɾ i u",
+        "k u t a c i p a ɾ i u"
+      ],
+      "que se foda": [
+        "s f o l a",
+        "f o l",
+        "i s i f l o d ɐ",
+        "i s i f o d ə"
+      ],
+      "what the fuck": [
+        "m a t i f u",
+        "m a k t p l i f u",
+        "ʊ a tʃ i l i f u",
+        "ʊ w aɪ tʃ i l e f uː"
+      ],
+      "fuck you": [
+        "f u k j u",
+        "v u k i o",
+        "f u k j i w",
+        "f u l k j uː u"
+      ],
+      "motherfucker": [
+        "m a f o",
+        "m a f a",
+        "u m a t ə f u k ɛ",
+        "m ɐ t e f u k e"
+      ],
+      "fucking hell": [
+        "f a k l o",
+        "f a p n i ʎ o",
+        "f u t i n d e ɾ ɛ u",
+        "f u k i n d e h e l u"
+      ],
+      "oh shit": [
+        "p ɑ ɕ i",
+        "p ʌ r ʃ i",
+        "a ʃ iː dʒ tʃ",
+        "v a ɕ ʃ iː d dʒ tʃ"
+      ],
+      "bullshit": [
+        "u ʃ i",
+        "m u ʌ ʃ i",
+        "w ʌ ʃ iː tɕ",
+        "o ʃ iː tʃ"
+      ],
+      "son of a bitch": [
+        "s u ɔ v a v i",
+        "s u l ɑ v ɔ o b i s",
+        "z s a f a b i tʃ",
+        "s ɔ f a b i tʃ"
+      ],
+      "god damn it": [
+        "p o l b a n",
+        "p o p a n i",
+        "w a s d ə a m iː tʃ",
+        "w a tʃ i d ə m iː tʃ"
+      ],
+      "shut the fuck up": [
+        "tʃ i b e ɪ f v u k w a",
+        "tʃ i v e f u k a",
+        "tʃ u tʃ n ɪ f u k a p p",
+        "tʃ uː dʒ ɛ f u k a"
+      ]
+    }
+  }
+}
