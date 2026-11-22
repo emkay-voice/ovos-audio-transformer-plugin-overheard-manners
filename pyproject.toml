@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "soundfile"]
 # to rebuild the phrase files (scripts/build_phrases.py); not needed at runtime
 build = ["phonemizer==3.4.0", "espeakng-loader==0.2.4"]
 
