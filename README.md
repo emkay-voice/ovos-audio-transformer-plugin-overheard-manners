@@ -106,7 +106,8 @@ the phrase files are up to date.
 
 In Emkay the browser owns the microphone and Emkay's listener does what
 ovos-dinkum-listener does. It does not feed audio transformers yet; that is
-tracked in Emkay, and this plugin waits for it there.
+[emkay#105](https://github.com/emkay-voice/emkay/issues/105), and this plugin
+waits for it there.
 
 ## License
 

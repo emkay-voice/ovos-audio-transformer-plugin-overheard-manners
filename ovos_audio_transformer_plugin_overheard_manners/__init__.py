@@ -72,7 +72,7 @@ class OverheardMannersPlugin(AudioTransformer):
         self._queue: "queue.Queue[Optional[bytes]]" = queue.Queue(maxsize=200)
         self._busy_speaking = False
         self._media_playing = False
-        self._last_comment = 0.0
+        self._last_comment: Optional[float] = None     # monotonic time; None = never commented
         self.spotter = None
         self.stt = None
         self.words = None
@@ -172,7 +172,8 @@ class OverheardMannersPlugin(AudioTransformer):
             self._ring.append(chunk)
             audio = np.frombuffer(chunk, dtype=np.int16).astype(np.float32) / 32768.0
             phrase = self.spotter.feed(audio)
-            if phrase is None or time.monotonic() - self._last_comment < self.cooldown:
+            if phrase is None or (self._last_comment is not None
+                                  and time.monotonic() - self._last_comment < self.cooldown):
                 continue
             pcm = b"".join(self._ring)[-int(BEFORE_SEC * SAMPLE_RATE) * 2:]
             # English phrases are transcribed as English, so English swearing is not
