@@ -97,7 +97,8 @@ def main():
     check = "--check" in sys.argv
     stale = []
     for lang, data in build().items():
-        f = LOCALE / lang / "overheard.json"
+        folder = next(d for d in LOCALE.iterdir() if d.name.split("-")[0] == lang)
+        f = folder / "overheard.json"
         text = json.dumps(data, ensure_ascii=False, indent=1) + "\n"
         if check:
             if not f.is_file() or f.read_text(encoding="utf-8") != text:

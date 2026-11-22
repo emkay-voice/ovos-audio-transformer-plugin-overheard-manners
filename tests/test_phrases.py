@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 LOCALE = Path(__file__).parents[1] / "ovos_audio_transformer_plugin_overheard_manners" / "locale"
-LANGS = ["ca", "da", "de", "en", "es", "eu", "fr", "gl", "it", "nl", "pt"]
+LANGS = ["ca-ES", "da-DK", "de-DE", "en-US", "es-ES", "eu-ES", "fr-FR", "gl-ES", "it-IT", "nl-NL", "pt-PT"]
 
 
 @pytest.fixture(scope="module")
@@ -33,9 +33,9 @@ def test_pronunciations_are_model_phones(lang, table):
 
 
 def test_english_has_every_local_pronunciation():
-    data = json.loads((LOCALE / "en" / "overheard.json").read_text(encoding="utf-8"))
+    data = json.loads((LOCALE / "en-US" / "overheard.json").read_text(encoding="utf-8"))
     for p in data["phrases"]:
-        assert set(p["ipa_local"]) == set(LANGS) - {"en"}, p["text"]
+        assert set(p["ipa_local"]) == {lang.split("-")[0] for lang in LANGS} - {"en"}, p["text"]
 
 
 def test_load_phrases_adds_english_with_local_pronunciation():

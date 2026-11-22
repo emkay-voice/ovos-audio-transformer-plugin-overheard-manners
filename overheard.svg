@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Overheard manners: the good manners thumbs-up's sibling - an ear that heard a "#!@" -->
+  <g stroke="#333" stroke-width="16" stroke-linejoin="round" stroke-linecap="round">
+    <!-- ear -->
+    <path d="M300 236 C300 168 352 132 400 132 C452 132 488 172 488 226 C488 270 462 290 442 306 C422 322 414 338 414 362 C414 410 380 440 340 440 C306 440 284 420 280 392 C276 350 300 300 300 236 Z" fill="#f5f2c4"/>
+    <path d="M352 238 C352 206 372 190 398 190 C424 190 440 208 440 232 C440 256 420 264 410 274" fill="none"/>
+    <!-- speech bubble with the swear -->
+    <path d="M96 92 H300 a28 28 0 0 1 28 28 V214 a28 28 0 0 1 -28 28 H176 L128 282 V242 H96 a28 28 0 0 1 -28 -28 V120 a28 28 0 0 1 28 -28 Z" fill="#f7f052"/>
+  </g>
+  <g fill="#333" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="78" text-anchor="middle">
+    <text x="198" y="194">#!@</text>
+  </g>
+</svg>

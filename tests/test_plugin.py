@@ -1,4 +1,5 @@
 """The plugin's flow, with a fake first ear and a fake STT."""
+import threading
 import time
 
 import pytest
@@ -123,3 +124,59 @@ def test_never_blocks_the_microphone(plugin, monkeypatch):
     for _ in range(500):
         plugin.on_audio(HIT)
     assert time.monotonic() - t < 0.5
+
+
+def test_stt_is_loaded_on_the_first_hit_only(monkeypatch):
+    loads = []
+    monkeypatch.setattr(om, "PhraseSpotter", FakeSpotter)
+    monkeypatch.setattr(om, "load_stt", lambda config: loads.append(config) or FakeSTT())
+    p = om.OverheardMannersPlugin({"lang": "en-US", "stt": {"module": "ovos-stt-plugin-vosk"}, "cooldown_sec": 0})
+    p.bind(FakeBus())
+    for _ in range(20):
+        p.on_audio(QUIET)
+    time.sleep(0.2)
+    assert loads == [] and p.stt is None          # a quiet house never pays for the model
+    p.on_audio(HIT)
+    assert wait_for(lambda: loads)
+    p.on_audio(HIT)
+    time.sleep(0.2)
+    assert len(loads) == 1                        # and it is loaded once
+    p.default_shutdown()
+
+
+def test_listener_can_share_its_stt(monkeypatch):
+    monkeypatch.setattr(om, "PhraseSpotter", FakeSpotter)
+    monkeypatch.setattr(om, "load_stt", lambda config: pytest.fail("must not load a second STT"))
+    monkeypatch.setattr(om.OverheardMannersPlugin, "_listener_stt",
+                        staticmethod(lambda: {"module": "ovos-stt-plugin-server"}))
+    p = om.OverheardMannersPlugin({"lang": "da-DK"})
+    bus = FakeBus()
+    said = []
+    bus.on("speak", lambda m: said.append(m))
+    p.bind(bus)
+    assert not p._ready                           # server STT only: off
+    shared = FakeSTT()
+    lock = threading.Lock()
+    FakeSTT.calls.clear(); FakeSTT.text = "what the fuck"
+    p.use_stt(shared, lock)
+    assert p.status()["listening"] and p.status()["stt"] == "listener"
+    with lock:                                    # the listener is transcribing: the plugin waits
+        p.on_audio(HIT)
+        time.sleep(0.2)
+        assert FakeSTT.calls == []
+    assert wait_for(lambda: said)
+    p.default_shutdown()
+
+
+def test_status_and_reload(plugin):
+    replies = []
+    plugin.bus.on("ovos.overheard_manners.status.response", lambda m: replies.append(m.data))
+    plugin.bus.emit(om.Message("ovos.overheard_manners.status"))
+    assert wait_for(lambda: replies)
+    assert replies[0]["listening"] and replies[0]["stt"] == "ovos-stt-plugin-fasterwhisper"
+    plugin.bus.emit(om.Message("ovos.overheard_manners.reload",
+                               {"config": {"lang": "da-DK", "enabled": False,
+                                           "stt": {"module": "ovos-stt-plugin-fasterwhisper"}}}))
+    assert plugin.status() == {"listening": False, "enabled": False, "state": "paused", "lang": "da-DK",
+                               "stt": "ovos-stt-plugin-fasterwhisper", "stt_loaded": False,
+                               "off_reason": "paused"}

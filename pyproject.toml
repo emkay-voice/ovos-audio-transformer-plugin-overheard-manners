@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ovos-audio-transformer-plugin-overheard-manners"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "OpenVoiceOS audio transformer: the assistant gently comments on swearing it overhears in the room - spotted and checked on the device, nothing recorded or sent"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -47,4 +47,4 @@ ovos-audio-transformer-plugin-overheard-manners = "ovos_audio_transformer_plugin
 packages = ["ovos_audio_transformer_plugin_overheard_manners"]
 
 [tool.setuptools.package-data]
-ovos_audio_transformer_plugin_overheard_manners = ["locale/*/*.json", "locale/*/*.dialog", "locale/*/*.voc"]
+ovos_audio_transformer_plugin_overheard_manners = ["controlpanel.json", "controlpanel.svg", "locale/*/*.json", "locale/*/*.dialog", "locale/*/*.voc"]

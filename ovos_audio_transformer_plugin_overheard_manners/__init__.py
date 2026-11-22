@@ -30,7 +30,7 @@ from ovos_utils.log import LOG
 
 from ovos_audio_transformer_plugin_overheard_manners.local_stt import load_stt, pick_local_stt, transcribe
 from ovos_audio_transformer_plugin_overheard_manners.spotter import (
-    DEFAULT_OFFSET, LOCALE, PhraseSpotter, lang_code, load_phrases)
+    DEFAULT_OFFSET, PhraseSpotter, lang_code, load_phrases, locale_dir)
 from ovos_audio_transformer_plugin_overheard_manners.words import SLUR, WordCheck
 
 PLUGIN_ID = "ovos-audio-transformer-plugin-overheard-manners"
@@ -43,8 +43,9 @@ OCP_PLAYING = 1
 
 def dialog_lines(code: str, name: str):
     for c in (code, "en"):
-        f = LOCALE / c / f"{name}.dialog"
-        if f.is_file():
+        folder = locale_dir(c)
+        f = folder / f"{name}.dialog" if folder else None
+        if f and f.is_file():
             return [ln.strip() for ln in f.read_text(encoding="utf-8").splitlines() if ln.strip()]
     return []
 
@@ -57,6 +58,7 @@ class OverheardMannersPlugin(AudioTransformer):
     lang (str): language of the room, default the device's ``lang``.
     stt (dict): a local STT to use, e.g. {"module": "ovos-stt-plugin-fasterwhisper", "model": "small"};
         default the listener's STT if it is a known local one (see local_stt.py), else the plugin stays off.
+        A listener can also hand over its own STT instead (use_stt), so no second model is loaded.
     cooldown_sec (float): least time between two comments, default 600.
     sensitivity_offset (float): stage 1 threshold offset, higher is stricter, default spotter.DEFAULT_OFFSET.
     confirm_blocks (int): stage 1 windows in a row, default 2.
@@ -64,20 +66,28 @@ class OverheardMannersPlugin(AudioTransformer):
 
     def __init__(self, config=None):
         super().__init__(PLUGIN_ID, 10, config or {})
-        self.enabled = bool(self.config.get("enabled", True))
-        self.cooldown = float(self.config.get("cooldown_sec", 600))
-        self.lang = self.config.get("lang") or self._device_lang()
-        self.code = lang_code(self.lang)
         self._ring = deque(maxlen=int(3 * SAMPLE_RATE / 1280) + 1)     # ~3 s of 80 ms chunks
         self._queue: "queue.Queue[Optional[bytes]]" = queue.Queue(maxsize=200)
         self._busy_speaking = False
         self._media_playing = False
         self._last_comment: Optional[float] = None     # monotonic time; None = never commented
         self.spotter = None
-        self.stt = None
         self.words = None
+        self.stt = None                 # loaded on the first hit, or handed over by the listener
+        self._stt_config: Optional[dict] = None
+        self._stt_lock = threading.Lock()
+        self._shared_stt = False
         self._worker = None
         self._ready = False
+        self._off_reason = ""
+        self._apply_config(self.config)
+
+    def _apply_config(self, config: dict):
+        self.config = config
+        self.enabled = bool(config.get("enabled", True))
+        self.cooldown = float(config.get("cooldown_sec", 600))
+        self.lang = config.get("lang") or self._device_lang()
+        self.code = lang_code(self.lang)
 
     @staticmethod
     def _device_lang() -> str:
@@ -90,39 +100,64 @@ class OverheardMannersPlugin(AudioTransformer):
         super().bind(bus)
         self.bus.on("ovos.overheard_manners.enable", self._on_enable)
         self.bus.on("ovos.overheard_manners.disable", self._on_disable)
+        self.bus.on("ovos.overheard_manners.status", self._on_status)
+        self.bus.on("ovos.overheard_manners.reload", self._on_reload)
         self.bus.on("recognizer_loop:audio_output_start", self._on_speaking)
         self.bus.on("recognizer_loop:audio_output_end", self._on_done_speaking)
         self.bus.on("ovos.common_play.player.state", self._on_player_state)
         if self.enabled:            # the transformer service binds but never calls initialize()
             self._start()
 
+    def use_stt(self, stt, lock: Optional[threading.Lock] = None):
+        """For a listener whose STT runs on the device: hand it over, so this plugin
+        loads no second model. Pass the lock the listener holds while it transcribes,
+        so the two never use the STT at the same time. The listener vouches that it is local."""
+        self.stt = stt
+        self._stt_lock = lock or self._stt_lock
+        self._shared_stt = True
+        if self.enabled:
+            self._start()
+
     def _start(self) -> bool:
         if self._ready:
             return True
-        stt_config = pick_local_stt(self.config.get("stt"), self._listener_stt())
-        if stt_config is None:
-            LOG.warning("overheard manners stays off: no STT that runs on this device. "
-                        "Room audio must not go to a server; name a local STT in this plugin's 'stt' config.")
-            return False
+        if not self._shared_stt:
+            self._stt_config = pick_local_stt(self.config.get("stt"), self._listener_stt())
+            if self._stt_config is None:
+                self._off_reason = "no_local_stt"
+                LOG.warning("overheard manners stays off: no STT that runs on this device. "
+                            "Room audio must not go to a server; name a local STT in this plugin's 'stt' config.")
+                return False
         phrases = load_phrases(self.lang)
         if not phrases:
+            self._off_reason = "no_phrases"
             LOG.warning(f"overheard manners stays off: no phrases for {self.lang}")
             return False
         try:
-            self.stt = load_stt(stt_config)
             self.spotter = PhraseSpotter(phrases, float(self.config.get("sensitivity_offset", DEFAULT_OFFSET)),
                                          int(self.config.get("confirm_blocks", 2)))
         except Exception:
+            self._off_reason = "error"
             LOG.exception("overheard manners could not start")
             return False
         self.words = WordCheck([self.code], [p.text for p in phrases])
         if not self.words.has_good_manners:
             LOG.warning("ovos-good-manners-pipeline-plugin is not installed: only this plugin's own short lists are used")
-        self._worker = threading.Thread(target=self._work, name="overheard-manners", daemon=True)
-        self._worker.start()
+        if self._worker is None:
+            self._worker = threading.Thread(target=self._work, name="overheard-manners", daemon=True)
+            self._worker.start()
         self._ready = True
+        self._off_reason = ""
         LOG.info(f"overheard manners listening ({self.lang}, {len(phrases)} phrases)")
         return True
+
+    def _transcribe(self, pcm: bytes, lang: str) -> str:
+        """Local STT, loaded the first time something sounds like swearing (so a quiet
+        house never pays for the model) unless the listener handed its own over."""
+        with self._stt_lock:
+            if self.stt is None:
+                self.stt = load_stt(self._stt_config)
+            return transcribe(self.stt, pcm, lang)
 
     @staticmethod
     def _listener_stt() -> dict:
@@ -138,6 +173,38 @@ class OverheardMannersPlugin(AudioTransformer):
     def _on_disable(self, message):
         self.enabled = False
         self._ring.clear()
+
+    def status(self) -> dict:
+        if self._shared_stt:
+            stt = "listener"
+        else:
+            stt = (self._stt_config or {}).get("module", "")
+        off = "paused" if not self.enabled else ("" if self._ready else self._off_reason)
+        return {"listening": bool(self.enabled and self._ready), "enabled": self.enabled,
+                "state": off or "listening", "lang": self.lang, "stt": stt,
+                "stt_loaded": self.stt is not None, "off_reason": off}
+
+    def _on_status(self, message):
+        self.bus.emit(message.response(self.status()))
+
+    def _on_reload(self, message):
+        """New settings from the control panel: {"config": this plugin's section}."""
+        config = message.data.get("config")
+        if config is None:
+            return
+        old_stt, old_lang = self.config.get("stt"), self.lang
+        self._apply_config(dict(config))
+        if not self._shared_stt and (self.config.get("stt") != old_stt):
+            with self._stt_lock:
+                self.stt = None            # loaded again on the next hit
+        self._ready = False
+        if self.lang != old_lang:
+            self.words = None
+        with self._queue.mutex:
+            self._queue.queue.clear()
+        self._ring.clear()
+        if self.enabled:
+            self._start()
 
     def _on_speaking(self, message):
         self._busy_speaking = True
@@ -167,7 +234,7 @@ class OverheardMannersPlugin(AudioTransformer):
             chunk = self._queue.get()
             if chunk is None:
                 return
-            if not self.enabled:
+            if not (self.enabled and self._ready):
                 continue
             self._ring.append(chunk)
             audio = np.frombuffer(chunk, dtype=np.int16).astype(np.float32) / 32768.0
@@ -180,7 +247,7 @@ class OverheardMannersPlugin(AudioTransformer):
             # turned into words of the device's language
             stt_lang = "en" if phrase.lang == "en" else self.lang
             try:
-                text = transcribe(self.stt, pcm, stt_lang)
+                text = self._transcribe(pcm, stt_lang)
             except Exception:
                 LOG.exception("overheard manners: STT failed")
                 continue

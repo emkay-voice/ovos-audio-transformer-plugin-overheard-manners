@@ -16,7 +16,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional
 
-LOCALE = Path(__file__).parent / "locale"
+from ovos_audio_transformer_plugin_overheard_manners.spotter import locale_dir
+
 FOUL, SLUR = "foul", "slur"
 
 
@@ -54,7 +55,7 @@ class WordCheck:
         foul, slurs, prefixes = set(p.lower() for p in extra_phrases), set(), set()
         for code in dict.fromkeys(codes + ["en"]):
             gm = _gm_folder(code)
-            foul |= set(_voc(gm, "foul_language")) | set(_voc(LOCALE / code, "foul_words"))
+            foul |= set(_voc(gm, "foul_language")) | set(_voc(locale_dir(code), "foul_words"))
             slurs |= set(_voc(gm, "slurs"))
             prefixes |= set(_voc(gm, "foul_prefixes"))
         self.has_good_manners = _good_manners_locale() is not None

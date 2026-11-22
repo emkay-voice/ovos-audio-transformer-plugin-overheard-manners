@@ -39,14 +39,24 @@ def lang_code(lang: str) -> str:
     return (lang or "en").split("-")[0].split("_")[0].lower()
 
 
+def locale_dir(lang: str) -> Optional[Path]:
+    """The locale folder for a language ('da', 'da-DK' or 'da_dk' -> locale/da-DK)."""
+    code = lang_code(lang)
+    for d in sorted(LOCALE.iterdir()):
+        if d.is_dir() and lang_code(d.name) == code:
+            return d
+    return None
+
+
 def load_phrases(lang: str) -> List[Phrase]:
     """The phrases listened for with the device in ``lang``: its own and the English base list,
     the English ones with both English and local pronunciations."""
     code = lang_code(lang)
     phrases = []
     for src in dict.fromkeys([code, "en"]):
-        f = LOCALE / src / "overheard.json"
-        if not f.exists():
+        folder = locale_dir(src)
+        f = folder / "overheard.json" if folder else None
+        if not f or not f.exists():
             continue
         data = json.loads(f.read_text(encoding="utf-8"))
         for p in data["phrases"]:

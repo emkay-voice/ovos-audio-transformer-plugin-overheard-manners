@@ -1,4 +1,4 @@
-# ovos-audio-transformer-plugin-overheard-manners
+# <img src='overheard.png' width='50' height='50' style='vertical-align:bottom'/> ovos-audio-transformer-plugin-overheard-manners
 
 An [OpenVoiceOS](https://openvoiceos.org) audio transformer that gives the
 assistant good manners about what it **overhears**: someone in the room says
@@ -10,7 +10,8 @@ It is part of [Emkay](https://github.com/emkay-voice/emkay) and works on any
 OpenVoiceOS. It is the companion of
 [ovos-good-manners-pipeline-plugin](https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin),
 which reacts to how you talk *to* the assistant. This plugin listens to the
-room, and it uses good manners' word lists.
+room, and it uses good manners' word lists. Its icon is the thumbs-up's
+sibling: an ear that just heard a "#!@".
 
 ## Everything stays on the device
 
@@ -83,9 +84,35 @@ On the bus:
 |---|---|
 | `ovos.overheard_manners.disable` / `.enable` | pause and resume (for example at night) |
 | `ovos.overheard_manners.heard` | emitted with `{"kind": "foul" \| "slur"}` when it comments |
+| `ovos.overheard_manners.status` | answers with whether it listens, its state, language and STT |
+| `ovos.overheard_manners.reload` | new settings: `{"config": the plugin's section}` |
 
 The model (3.5 MB) is fetched from Hugging Face on first use, as the wakeforge
 plugin does.
+
+### Speech to text: shared, or loaded when needed
+
+There has to be a speech-to-text engine on the device that runs locally. It
+does not have to be the one OVOS uses for your commands. The plugin never pays
+for a second model it does not need:
+
+- **A listener can hand over its own STT** with `use_stt(stt, lock)`. Emkay's
+  listener does this, so there is only one model in memory. The lock keeps the
+  listener and the plugin from transcribing at the same time.
+- **Otherwise the model is loaded on the first hit**, the first time something
+  in the room sounds like swearing. A quiet house never loads it, and the first
+  comment just comes a few seconds later.
+
+## In the control panel
+
+With [ovos-control-panel](https://github.com/OpenVoiceOS/ovos-control-panel)
+on the device, the plugin has its own page, **Overheard manners**, under
+**Everyday**. It is described in `controlpanel.json` (strings in
+`locale/<lang>/controlpanel.json`, 11 languages) and drawn by the panel; no
+code of the plugin runs in the panel. It shows whether it is listening, and
+why not if it isn't (no local STT, paused). It can pause and resume, and it
+sets `enabled`, the cool-down and the sensitivity, which take effect at once
+(`ovos.overheard_manners.reload`), no restart.
 
 ## Languages
 
@@ -107,7 +134,8 @@ the phrase files are up to date.
 In Emkay the browser owns the microphone and Emkay's listener does what
 ovos-dinkum-listener does. It does not feed audio transformers yet; that is
 [emkay#105](https://github.com/emkay-voice/emkay/issues/105), and this plugin
-waits for it there.
+waits for it there. Emkay's speech to text is on the device by default, so its
+listener hands it over (`use_stt`) and the plugin costs no extra model.
 
 ## License
 

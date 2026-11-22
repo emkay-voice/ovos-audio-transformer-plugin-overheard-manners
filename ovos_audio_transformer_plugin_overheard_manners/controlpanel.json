@@ -1,0 +1,110 @@
+{
+ "controlpanel": 1,
+ "id": "overheard-manners",
+ "title": "om.title",
+ "group": "everyday",
+ "order": 60,
+ "icon": "controlpanel.svg",
+ "bus": "ovos.overheard_manners.",
+ "blocks": [
+  {
+   "type": "text",
+   "text": "om.intro"
+  },
+  {
+   "type": "status",
+   "title": "om.now.title",
+   "query": "ovos.overheard_manners.status",
+   "refresh": 10,
+   "rows": [
+    {
+     "label": "om.state",
+     "value": "{state@om.state}"
+    },
+    {
+     "label": "om.stt",
+     "value": "{stt}",
+     "when": "stt"
+    },
+    {
+     "label": "om.lang",
+     "value": "{lang}"
+    }
+   ],
+   "actions": [
+    {
+     "label": "om.pause",
+     "send": "ovos.overheard_manners.disable",
+     "privileged": false,
+     "when": "enabled"
+    },
+    {
+     "label": "om.resume",
+     "send": "ovos.overheard_manners.enable",
+     "privileged": false,
+     "when": "!enabled"
+    }
+   ]
+  },
+  {
+   "type": "form",
+   "title": "om.settings.title",
+   "save": {
+    "config": "audio_transformers.ovos-audio-transformer-plugin-overheard-manners",
+    "reload": "ovos.overheard_manners.reload"
+   },
+   "fields": [
+    {
+     "name": "enabled",
+     "label": "om.enabled",
+     "type": "checkbox",
+     "default": true
+    },
+    {
+     "name": "cooldown_sec",
+     "label": "om.cooldown",
+     "type": "select",
+     "default": 600,
+     "options": [
+      {
+       "value": 300,
+       "label": "om.cooldown.5"
+      },
+      {
+       "value": 600,
+       "label": "om.cooldown.10"
+      },
+      {
+       "value": 1800,
+       "label": "om.cooldown.30"
+      },
+      {
+       "value": 3600,
+       "label": "om.cooldown.60"
+      }
+     ]
+    },
+    {
+     "name": "sensitivity_offset",
+     "label": "om.sensitivity",
+     "type": "select",
+     "default": 0.07,
+     "options": [
+      {
+       "value": 0.1,
+       "label": "om.sensitivity.strict"
+      },
+      {
+       "value": 0.07,
+       "label": "om.sensitivity.normal"
+      },
+      {
+       "value": 0.04,
+       "label": "om.sensitivity.keen"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
