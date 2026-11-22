@@ -15,9 +15,15 @@ in memory, the text is only used for the verdict and is not logged or put on
 the bus. Off by default: OVOS only loads it when it is named in the
 ``audio_transformers`` config, and it can be paused and resumed on the bus
 (ovos.overheard_manners.disable / enable).
+
+Where Python has no threads (Pyodide, as in Emkay) the two stages run as the
+audio arrives (``inline``), and the first ear only listens while the room is
+louder than ``quiet_db``: silence can't be swearing, and the model is the
+costly part.
 """
 import queue
 import random
+import sys
 import threading
 import time
 from collections import deque
@@ -39,6 +45,8 @@ SAMPLE_RATE = 16000
 BEFORE_SEC = 2.5
 #: OCP player state "playing" (ovos_utils.ocp.PlayerState.PLAYING)
 OCP_PLAYING = 1
+#: Pyodide (Emkay) can't start threads: work in on_audio there
+NO_THREADS = sys.platform == "emscripten"
 
 
 def dialog_lines(code: str, name: str):
@@ -62,6 +70,10 @@ class OverheardMannersPlugin(AudioTransformer):
     cooldown_sec (float): least time between two comments, default 600.
     sensitivity_offset (float): stage 1 threshold offset, higher is stricter, default spotter.DEFAULT_OFFSET.
     confirm_blocks (int): stage 1 windows in a row, default 2.
+    inline (bool): run both stages in on_audio rather than in a thread of its own,
+        default on only where Python has no threads (Pyodide).
+    quiet_db (float): inline, the first ear rests while the room is quieter than this
+        (dBFS), default -50; null listens to silence too.
     """
 
     def __init__(self, config=None):
@@ -80,6 +92,7 @@ class OverheardMannersPlugin(AudioTransformer):
         self._worker = None
         self._ready = False
         self._off_reason = ""
+        self._loud_until = 0.0          # inline: monotonic time the last loud audio still counts until
         self._apply_config(self.config)
 
     def _apply_config(self, config: dict):
@@ -88,6 +101,9 @@ class OverheardMannersPlugin(AudioTransformer):
         self.cooldown = float(config.get("cooldown_sec", 600))
         self.lang = config.get("lang") or self._device_lang()
         self.code = lang_code(self.lang)
+        self.inline = bool(config.get("inline", NO_THREADS))
+        quiet = config.get("quiet_db", -50.0 if self.inline else None)
+        self.quiet_db = None if quiet is None else float(quiet)
 
     @staticmethod
     def _device_lang() -> str:
@@ -143,7 +159,7 @@ class OverheardMannersPlugin(AudioTransformer):
         self.words = WordCheck([self.code], [p.text for p in phrases])
         if not self.words.has_good_manners:
             LOG.warning("ovos-good-manners-pipeline-plugin is not installed: only this plugin's own short lists are used")
-        if self._worker is None:
+        if self._worker is None and not self.inline:
             self._worker = threading.Thread(target=self._work, name="overheard-manners", daemon=True)
             self._worker.start()
         self._ready = True
@@ -223,6 +239,9 @@ class OverheardMannersPlugin(AudioTransformer):
     def on_audio(self, audio_data):
         """Room audio while waiting for the wake word. Never blocks the listener."""
         if self.enabled and self._ready and not self._busy_speaking and not self._media_playing:
+            if self.inline:
+                self._handle(audio_data)
+                return audio_data
             try:
                 self._queue.put_nowait(audio_data)
             except queue.Full:
@@ -234,14 +253,36 @@ class OverheardMannersPlugin(AudioTransformer):
             chunk = self._queue.get()
             if chunk is None:
                 return
-            if not (self.enabled and self._ready):
-                continue
+            self._handle(chunk)
+
+    def _quiet(self, audio: np.ndarray) -> bool:
+        """Inline: is the room too quiet to be worth the first ear? A window of
+        loud audio (1.5 s) is still scored after the last loud chunk."""
+        if self.quiet_db is None:
+            return False
+        now = time.monotonic()
+        rms = float(np.sqrt(np.mean(audio * audio))) if audio.size else 0.0
+        if 20 * np.log10(rms + 1e-9) >= self.quiet_db:
+            self._loud_until = now + 1.5
+            return False
+        return now >= self._loud_until
+
+    def _handle(self, chunk: bytes):
+        """Both stages for one chunk: the first ear, then STT and the word lists on a hit."""
+        if not (self.enabled and self._ready):
+            return
+        try:
             self._ring.append(chunk)
             audio = np.frombuffer(chunk, dtype=np.int16).astype(np.float32) / 32768.0
+            if self.inline and self._quiet(audio):
+                if self._loud_until:
+                    self._loud_until = 0.0
+                    self.spotter.reset()        # the next loud audio starts a fresh window
+                return
             phrase = self.spotter.feed(audio)
             if phrase is None or (self._last_comment is not None
                                   and time.monotonic() - self._last_comment < self.cooldown):
-                continue
+                return
             pcm = b"".join(self._ring)[-int(BEFORE_SEC * SAMPLE_RATE) * 2:]
             # English phrases are transcribed as English, so English swearing is not
             # turned into words of the device's language
@@ -250,7 +291,7 @@ class OverheardMannersPlugin(AudioTransformer):
                 text = self._transcribe(pcm, stt_lang)
             except Exception:
                 LOG.exception("overheard manners: STT failed")
-                continue
+                return
             verdict = self.words.verdict(text)
             del text, pcm                       # not kept, not logged
             if verdict:
@@ -259,6 +300,8 @@ class OverheardMannersPlugin(AudioTransformer):
             self.spotter.reset()
             with self._queue.mutex:             # what was heard meanwhile is stale now
                 self._queue.queue.clear()
+        except Exception:
+            LOG.exception("overheard manners: could not handle a chunk")
 
     def _comment(self, verdict: str):
         lines = dialog_lines(self.code, "overheard_slur" if verdict == SLUR else "overheard_foul")

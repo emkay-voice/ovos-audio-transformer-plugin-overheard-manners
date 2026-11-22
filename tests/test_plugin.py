@@ -180,3 +180,48 @@ def test_status_and_reload(plugin):
     assert plugin.status() == {"listening": False, "enabled": False, "state": "paused", "lang": "da-DK",
                                "stt": "ovos-stt-plugin-fasterwhisper", "stt_loaded": False,
                                "off_reason": "paused"}
+
+
+# ---- without threads (Pyodide) ----------------------------------------------
+
+LOUD_HIT = b"\x00\x10" * 1280        # about -18 dBFS, and "recognised" by the fake first ear
+
+
+@pytest.fixture
+def inline(monkeypatch):
+    monkeypatch.setattr(om, "PhraseSpotter", FakeSpotter)
+    monkeypatch.setattr(om, "load_stt", lambda config: FakeSTT())
+    FakeSTT.calls.clear(); FakeSTT.text = "oh what the fuck"
+    p = om.OverheardMannersPlugin({"lang": "da-DK", "stt": {"module": "ovos-stt-plugin-fasterwhisper"},
+                                   "inline": True})
+    bus = FakeBus()
+    p.said = []
+    bus.on("speak", lambda m: p.said.append(m))
+    p.bind(bus)
+    yield p
+    p.default_shutdown()
+
+
+def test_inline_works_in_on_audio(inline):
+    assert inline._worker is None                  # no thread of its own
+    for c in (QUIET, LOUD_HIT):
+        assert inline.on_audio(c) is c
+    assert len(inline.said) == 1                   # at once, no thread to wait for
+
+
+def test_inline_first_ear_rests_while_quiet(inline):
+    fed = []
+    inline.spotter.feed = lambda audio: fed.append(audio) or None
+    for _ in range(5):
+        inline.on_audio(QUIET)
+    assert fed == []                               # silence is not scored
+    inline.on_audio(LOUD_HIT)
+    inline.on_audio(QUIET)                          # quiet right after loud: still in the window
+    assert len(fed) == 2
+
+
+def test_inline_by_default_only_without_threads(monkeypatch):
+    assert om.OverheardMannersPlugin({}).inline is False
+    monkeypatch.setattr(om, "NO_THREADS", True)
+    p = om.OverheardMannersPlugin({})
+    assert p.inline is True and p.quiet_db == -50.0
